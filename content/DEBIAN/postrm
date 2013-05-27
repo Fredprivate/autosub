@@ -2,6 +2,11 @@
 
 if [ "$1" == "remove" ] || [ "$1" == "purge" ]; then
 
-	true
+	if [ -d "/usr/local/etc/auto-sub" ]; then
+		rm -r /usr/local/etc/auto-sub &>/dev/null
+	fi
+	if [ -d "/usr/local/share/auto-sub" ]; then
+		rm -r /usr/local/share/auto-sub &>/dev/null
+	fi
 
 fi
