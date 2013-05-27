@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ $1 == "remove" ]; then
+
+        if [ -f "/etc/init.d/autosub" ]; then
+                /etc/init.d/autosub stop &>/dev/null;
+        fi
+
+fi
