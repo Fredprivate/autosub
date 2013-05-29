@@ -5,8 +5,17 @@ if [ "$1" == "remove" ] || [ "$1" == "purge" ]; then
 	if [ -d "/usr/local/etc/auto-sub" ]; then
 		rm -r /usr/local/etc/auto-sub &>/dev/null
 	fi
+
 	if [ -d "/usr/local/share/auto-sub" ]; then
-		rm -r /usr/local/share/auto-sub &>/dev/null
+       	while true; do
+    			read -p "Do you want to remove the auto-sub database files? (yes/no) " yn
+    			case $yn in
+       			yes ) 	rm -r /usr/local/share/auto-sub &>/dev/null; 
+					break;;
+        			no )   break;;
+        			* ) echo "Please answer yes or no.";;
+    			esac
+		done
 	fi
 
 fi
