@@ -1,50 +1,115 @@
-#! /bin/sh
+#!/bin/bash
+#
+#Copyright 2012 CurlyMo <development@xbian.org>
+#
+#This file is part of XBian - XBMC on the Raspberry Pi.
+#
+#XBian is free software: you can redistribute it and/or modify it under the
+#terms of the GNU General Public License as published by the Free Software
+#!/bin/bash
+#
+#Copyright 2012 CurlyMo <development@xbian.org>
+#
+#This file is part of XBian - XBMC on the Raspberry Pi.
+#
+#XBian is free software: you can redistribute it and/or modify it under the
+#terms of the GNU General Public License as published by the Free Software
+#Foundation, either version 3 of the License, or (at your option) any later
+#version.
+#
+#XBian is distributed in the hope that it will be useful, but WITHOUT ANY
+#WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+#FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+#details.
+#
+#You should have received a copy of the GNU General Public License along
+#with XBian. If not, see <http://www.gnu.org/licenses/>
+#
 ### BEGIN INIT INFO
-# Provides: AutoSub
-# Required-Start: $remote_fs $syslog
-# Required-Stop: $remote_fs $syslog
-# Default-Start: 2 3 4 5
-# Default-Stop: 0 1 6
-# Short-Description: AutoSub
-# Description: Script to control AutoSub
+# Provides:          auto-sub
+# Required-Start:    $local_fs $network $remote_fs
+# Required-Stop:     $local_fs $network $remote_fs
+# Should-Start:      $NetworkManager
+# Should-Stop:       $NetworkManager
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts instance of Auto-Sub
+# Description:       starts instance of Auto-Sub using start-stop-daemon
 ### END INIT INFO
 
-## START EDIT ##
-
-NAME=AutoSub
-INIT_DIR=/etc/init.d
+APP_PATH=/usr/local/share/auto-sub/
+RUN_AS=xbian
 DAEMON=/usr/bin/python
-DAEMON_OPTS=" /usr/local/share/auto-sub/AutoSub.py -c/usr/local/etc/auto-sub/config.properties -d -l"
+PID_FILE=/tmp/autosub.pid
+NAME=autosub
+DESC=AutoSub
+DAEMON_OPTS=" AutoSub.py --daemon --config=/usr/local/etc/auto-sub/config.properties"
+NICE=0
 
-## STOP EDIT ##
+##
+. /lib/lsb/init-functions
+test -x $DAEMON || exit 0
+set -e
 
-autosub_start() {
-	echo "Starting $NAME"
-	$DAEMON ${DAEMON_OPTS}
+check_retval() {
+        if [ $? -eq 0 ]; then
+                log_end_msg 0
+                return 0
+        else
+                log_end_msg 1
+                exit 1
+        fi
 }
-autosub_stop() {
-	echo "Stopping $NAME"
+
+is_running() {
+COUNT=0;
+
 	for pid in $(/bin/pidof python); do
-		/bin/grep -q "AutoSub.py" /proc/$pid/cmdline && /bin/kill $pid
+			/bin/grep -q "AutoSub.py" /proc/$pid/cmdline && COUNT=$((COUNT+1))
 	done
-	/bin/sleep 2
+
+	if  [ $COUNT -lt 1 ]; then
+			echo 0;
+	else
+			echo 1;
+	fi
+
 }
 
-case "$1" in
+ACTION=$1;
+RUNNING=$(is_running);
+
+case "$ACTION" in
 	start)
-		autosub_start
+		if [ $RUNNING -eq 0 ]; then
+			log_daemon_msg "Starting AutoSub"
+			start-stop-daemon -d $APP_PATH -c $RUN_AS --start --nicelevel $NICE --background --pidfile $PID_FILE --exec $DAEMON -- $DAEMON_OPTS
+			check_retval
+		else
+			log_success_msg "AutoSub already running."
+		fi
 	;;
 	stop)
-		autosub_stop
+		if [ $RUNNING -eq 1 ]; then
+			log_daemon_msg "Stopping AutoSub"
+			for pid in $(/bin/pidof python); do
+				/bin/grep -q "AutoSub.py" /proc/$pid/cmdline && kill -2 $pid; echo $? > /dev/null 
+			done
+			check_retval
+		else
+			log_success_msg "AutoSub not running"
+		fi
 	;;
 	restart|force-reload)
-		echo "Restarting $NAME"
-		autosub_stop
-		autosub_start
+		$0 stop
+		$0 start
 	;;
 	*)
-		echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+		N=/etc/init.d/$NAME
+		echo "Usage: $N {start|stop|restart|force-reload}" >&2
 		exit 1
 	;;
 esac
+
 exit 0
+

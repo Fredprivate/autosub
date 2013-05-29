@@ -1,5 +1,4 @@
 0007c2ee506cb672c79282b22ed6b4e6  etc/init.d/autosub
-a84fe46757ecf74ed8ba05d7f527824e  etc/init.d/couchpotato
 43e9aca85f96ce8453e1a91dd8f50e1d  usr/local/etc/auto-sub/config.properties
 f6ef1187a92c7be9e58db72cd6846df3  usr/local/share/auto-sub/AutoSub.py
 58d7ce747cd8733930bcd80bc3f23d3f  usr/local/share/auto-sub/ExamplePostProcess.py
