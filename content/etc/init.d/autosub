@@ -37,17 +37,19 @@
 # Description:       starts instance of Auto-Sub using start-stop-daemon
 ### END INIT INFO
 
-APP_PATH=/usr/local/share/auto-sub/
+. /etc/default/autosub
+
+APP_PATH=/usr/local/share/autosub/
 RUN_AS=xbian
 DAEMON=/usr/bin/python
 PID_FILE=/tmp/autosub.pid
 NAME=autosub
 DESC=AutoSub
-DAEMON_OPTS=" AutoSub.py --daemon --config=/usr/local/etc/auto-sub/config.properties"
-NICE=0
+DAEMON_OPTS=" AutoSub.py --daemon --config=$CONFIG_FILE"
 
 ##
 . /lib/lsb/init-functions
+test "$ENABLED" = '1' || exit 0
 test -x $DAEMON || exit 0
 set -e
 

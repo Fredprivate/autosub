@@ -1,0 +1,5 @@
+
+ENABLED=1
+
+CONFIG_FILE=/etc/autosub/config.properties
+NICE=9
