@@ -14,7 +14,7 @@ from autosub.notify import mail
 from autosub.notify import nma
 from autosub.notify import growl
 from autosub.notify import prowl
-from autosub.notify import nmwp
+from autosub.notify import pushalot
 
 log = logging.getLogger('thelogger')
 
@@ -42,10 +42,10 @@ def notifyTest(notifylib):
     if notifylib == 'prowl':
         log.info("Notify: Sending test notification to prowl")
         return prowl.test_notify()
-	
-    if notifylib == 'nmwp':
-        log.info("Notify: Sending test notification to your Windows Phone device")
-        return nmwp.test_notify()
+    
+    if notifylib == 'pushalot':
+        log.info("Notify: Sending test notification to your Windows (Phone) device via Pushalot")
+        return pushalot.test_notify()
     
 
 def notify(lang, subtitlefile, videofile):
@@ -79,7 +79,7 @@ def notifySend(lang, subtitlefile, videofile):
     if autosub.NOTIFYPROWL:
         log.debug("Notify: Prowl is enabled")
         prowl.send_notify(lang, subtitlefile, videofile)
-		
-    if autosub.NOTIFYNMWP:
-        log.debug("Notify: NMWP is enabled")
-        nmwp.send_notify(lang, subtitlefile, videofile)
+    
+    if autosub.NOTIFYPUSHALOT:
+        log.debug("Notify: Pushalot is enabled")
+        pushalot.send_notify(lang, subtitlefile, videofile)

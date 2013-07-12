@@ -1,9 +1,9 @@
 Origin: XBian
 Package: xbian-package-autosub
-Version: 0.5.7
+Version: 0.5.8
 Section: net
 Priority: optional
 Architecture: armhf
 Depends: xbian-update, python-cheetah
 Maintainer: sjengfred <sjengfred@home.nl>
-Description: Auto-Sub 0.5.7 alpha compiled, patched and configured for XBian
+Description: Auto-Sub 0.5.8 alpha compiled, patched and configured for XBian
