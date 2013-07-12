@@ -2,12 +2,11 @@
 
 if [ "$1" == "remove" ] || [ "$1" == "purge" ]; then 
 
-	rm -fr /usr/local/share/autosub
-
-# removing config files should be performed only if user requested purge
+# removing config+database files should be performed only if user requested purge
 
 	if [ "$1" == "purge" ]; then
 
+		rm -fr /usr/local/share/autosub
 		rm -fr /etc/autosub
                 rm -f /etc/default/autosub
 
